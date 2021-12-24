@@ -3,9 +3,9 @@
  ძალიან დიდი იმიჯია და პირველ compose-ს დიდი დრო დასჭირდება და გაითვალისწინეთ. საკმაოდ resource intensive-ც შეიძლება იყოს.
  
 ---
-**იმიჯის გაშვება**
+**გაშვება**
 
-ამ იმიჯში გვაქვს Airflow-ის ორნაირი executor-ი (local, sequential) და შესაბამისად გვაქვს ორი docker compose ფაილიც.
+ამ repo-ში გვაქვს Airflow-ის ორნაირი executor-ი (local, sequential) და შესაბამისად გვაქვს ორი docker compose ფაილიც.
 
 **_Sequential_**
 
