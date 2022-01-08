@@ -105,7 +105,7 @@ services:
   huedb:
     image: postgres:12.1-alpine
     volumes:
-      - pg_data:/var/lib/postgresql/data/
+      - //d/BigDataPlayground/local/hive_pg_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     env_file:
@@ -135,10 +135,10 @@ services:
         - 8282:8888             
       
 volumes:
-  pg_data: 
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: //d/BigDataPlayground/local/hive_pg_data
+  # pg_data: 
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     o: bind
+  #     device: //d/BigDataPlayground/local/hive_pg_data
   airflow_logs: {}
