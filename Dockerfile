@@ -90,6 +90,7 @@ RUN set -euo pipefail && \
             "boto3" \
             "psycopg2" \
             "apache-airflow-providers-apache-spark==2.0.2" \
+            "apache-airflow-providers-apache-hdfs==${AIRFLOW_NORM_VERSION}"\
             ; \
     elif [[ "${AIRFLOW_NORM_VERSION}" == "1.9.*" ]]; then \
         poetry add \
