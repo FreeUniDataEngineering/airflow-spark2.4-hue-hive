@@ -114,6 +114,23 @@ services:
     links:
       - huedb
 
+  pyspark-notebook:
+      image: kublr/pyspark-notebook:spark-2.4.0-hadoop-2.6
+      volumes:
+        - //d/BigDataPlayground/local/notebooks:/jupyter
+      user: root
+      container_name: pyspark-notebook
+      hostname: pyspark-notebook
+      ports:
+        - 8282:8888             
+        - 4040:4040
+        - 4041:4041
+        - 4042:4042
+        - 4043:4043        
+        - 4044:4044
+        - 4045:4045
+      environment:
+        JUPYTER_TOKEN: token
 volumes:
   # pg_data: 
   #   driver: local
