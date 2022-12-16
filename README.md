@@ -19,6 +19,7 @@
 | docker_compose_local_v4.yml |იგივე, რაც v3, თუმცა Kafka დაემატა | Airflow **Local** Executor (Prebuilt) + Spark, Jupyter, Kafka | **docker-compose -f docker_compose_local_v4.yml up --build** (ბოლოში -d ლოგებმა რომ არ შეგაწუხოთ) | No, HDFS აკლია | Yes |
 | docker_compose_local_v5.yml | ყველა სერვისია ერთად | Airflow **Local** Executor (Prebuilt) + Spark, Hadoop (HDFS, Hue, Hive), Jupyter, Kafka | **docker-compose -f docker_compose_local_v5.yml up --build** (ბოლოში -d ლოგებმა რომ არ შეგაწუხოთ) | Yes| Yes |
 
+შეგიძლიათ compose ფაილები საკუთარი საჭიროებისამებრ შეცვალოთ.
 
 image-ების დაპულვას ცოტა დრო დასჭირდება და ამის შემდეგ კონტეინერების აწევას, განსაკუთრებით Airflow-სას, მიახლოებით 1 წუთამდე უნდა დასჭირდეს.
 
