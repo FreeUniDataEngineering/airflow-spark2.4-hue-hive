@@ -84,7 +84,7 @@ RUN set -euo pipefail && \
     SQLALCHEMY_NORM_VERSION="$(printf "%s.%s" "${SQLALCHEMY_VERSION}" "*" | cut -d '.' -f1,2,3)"; \
     pushd "${POETRY_SYSTEM_PROJECT_DIR}"; \
     if [[ "${AIRFLOW_NORM_VERSION}" == "2.1.*" ]]; then \
-        poetry add \
+        pip install \
             "apache-airflow==${AIRFLOW_NORM_VERSION}" \
             "sqlalchemy==${SQLALCHEMY_NORM_VERSION}" \
             "boto3" \
@@ -93,7 +93,7 @@ RUN set -euo pipefail && \
             "apache-airflow-providers-apache-hdfs==${AIRFLOW_NORM_VERSION}"\
             ; \
     elif [[ "${AIRFLOW_NORM_VERSION}" == "1.9.*" ]]; then \
-        poetry add \
+        pip install \
             "apache-airflow==${AIRFLOW_NORM_VERSION}" \
             "sqlalchemy==${SQLALCHEMY_NORM_VERSION}" \
             "boto3" \
@@ -106,7 +106,7 @@ RUN set -euo pipefail && \
             "werkzeug<1.0" \
             ; \
     else \
-        poetry add \
+        pip install \
             "apache-airflow==${AIRFLOW_NORM_VERSION}" \
             "sqlalchemy==${SQLALCHEMY_NORM_VERSION}" \
             "boto3" \
@@ -145,7 +145,7 @@ RUN mkdir -p "${AIRFLOW_DAG}"
 
 COPY setup_auth.py test_db_conn.py ${AIRFLOW_HOME}/
 
-# RUN airflow users create -e admin@airflow.air -f Admin -l Adminishvili -p freeuni -r Admin -u freeuni 
+# RUN airflow users create -e admin@airflow.air -f Admin -l Adminishvili -p airflow -r Admin -u airflow 
 
 # All the other env vars that don't affect the build here
 ENV PYSPARK_SUBMIT_ARGS="--py-files ${SPARK_HOME}/python/lib/pyspark.zip pyspark-shell"

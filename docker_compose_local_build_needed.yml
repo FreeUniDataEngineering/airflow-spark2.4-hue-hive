@@ -7,8 +7,8 @@ services:
     ports:
       - "5433"
     environment:
-      POSTGRES_USER: fixme
-      POSTGRES_PASSWORD: fixme
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
       PGPORT: 5433
     restart: always
@@ -33,7 +33,7 @@ services:
       - airflow_logs:/airflow/logs/  
     environment: &environment
       AIRFLOW__CORE__FERNET_KEY: 8NE6O6RcTJpxcCkuKxOHOExzIJkXkeJKbRie03a69dI=
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql://fixme:fixme@postgres:5433/airflow
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@postgres:5433/airflow
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
     restart: always
   webserver:
