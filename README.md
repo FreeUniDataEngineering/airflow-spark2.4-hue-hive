@@ -103,16 +103,6 @@ as below:
 - Python
 - SQL Alchemy
 
-Additionally, `poetry` is used to perform all Python related installations at a
-predefined global project directory, so that it is easy to add on new packages
-without conflicting dependency package versions, which raw `pip` cannot achieve.
-See
-<https://github.com/dsaidgovsg/spark-k8s-addons#how-to-properly-manage-pip-packages>
-for more information.
-
-For builds involving Airflow v2 onwards, note that `poetry` is not officially
-supported as an installation tool, but it is used anyway to make sure dependencies
-are compatible and tested to work across multiple builds with different versions.
 
 See <https://github.com/apache/airflow/issues/13149> for a related discussion
 and how to resolve possible conflicts when installing packages on top of this
@@ -210,10 +200,10 @@ for more details.
 
 ```
 # Airflow V2
-poetry add apache-airflow-provider-apache-spark==1.0.3
+pip install apache-airflow-provider-apache-spark==1.0.3
 
 # Airflow V1
-poetry add apache-airflow[spark]==1.10.z
+pip install apache-airflow[spark]==1.10.z
 ```
 
 ## Changelogs
