@@ -1,43 +1,30 @@
 ## საყურადღებო ამბები
 
- ძალიან დიდი იმიჯია და პირველ compose-ს დიდი დრო დასჭირდება და გაითვალისწინეთ. საკმაოდ resource intensive-ც შეიძლება იყოს.
+ დიდი იმიჯებიაა, პირველ compose-ს დიდი დრო დასჭირდება და გაითვალისწინეთ. საკმაოდ resource intensive-ც შეიძლება იყოს.
  
+ Airflow-ში არ დაგავიწყდეთ _spark_default_-ის შევსება ისე, როგორც ეს ქვევით არის მითითებული. 
+
 ---
 **გაშვება**
 
-ამ repo-ში გვაქვს Airflow-ის ორნაირი executor-ი (local, sequential) და გვაქვს სამი docker compose ფაილიც.
+ამ repo-ში გვაქვს რამდენიმე docker-compose ფაილი.
+განსხვავებებს გთავაზობთ ცხრილის სახით:
 
-**_Sequential_**
+| Compose File Name        | Description | Services Included           | Docker Command  | Recommended for Airflow Assignment | Recommended For Final Project
+| ------------- |:-------------:| -----:|-----:| -----:| -----:|
+| docker_compose_sequential.yml | აქ პარალელიზმი არ იქნება და პროექტშიც წესით არ გამოგადგებათ| Airflow **Sequential** Executor + Spark, Hadoop (HDFS, Hue, Hive), Jupyter | ამ რეპოზიტორის დირექტორიაში (სადაც **docker_compose_sequential.yml**) ფაილია უშვებთ: **docker-compose -f docker_compose_sequential.yml up --build** (ბოლოში -d ლოგებმა რომ არ შეგაწუხოთ) ან **docker-compose -f docker_compose_sequential.yml up --build** | Maybe | No |
+| docker_compose_local_v1.yml | ეს ვერსია ამ რეპოზიტორიაში არსებული Dockerfile, entrypoint და სხვა რესურსების გამოყენებით ბილდავს Airflow იმიჯს. დრო სჭირდება, მაგრამ საკმაოდ ავაჩქარეთ. გირჩევთ ამ ვერსიის გამოყენებას მაშინ, თუ Dockerfile-ის ან თუნდაც entrypoint ფაილების შეცვლა გჭირდებათ. მაგალითად, შეიძლება ახალი requirement-ების დამატება გჭირდებოდეთ | Airflow **Local** Executor, Hadoop (HDFS, Hue, Hive), Jupyter | **docker-compose -f ddocker_compose_local_v1.yml up --build** (ბოლოში -d ლოგებმა რომ არ შეგაწუხოთ) ან **docker-compose -f docker_compose_local_v1.yml up --build** | Yes, მაგრამ v2-v5 (და-build-ულები) სჯობს | Kafka აკლია |
+| docker_compose_local_v2.yml |ამ ვარიანტში Airflow+Spark-ის ნაწილი ჩვენ მიერ წინასწარ არის დაბილდული და Dockerhub-ზე ატვირთული. Build-ის დრო დაგეზოგებათ | Airflow **Local** Executor (Prebuilt), Hadoop (HDFS, Hue, Hive), Jupyter |**docker-compose -f docker_compose_local_v2.yml up --build** (ბოლოში -d ლოგებმა რომ არ შეგაწუხოთ) ან **docker-compose -f docker_compose_local_v2.yml up --build** | Yes | Kafka აკლია |
+| docker_compose_local_v3.yml |იგივე, რაც v2, თუმცა Hadoop ნაწილი აქვს ამოკლებული | Airflow **Local** Executor (Prebuilt)  + Spark, Jupyter | **docker-compose -f docker_compose_local_v3.yml up --build** (ბოლოში -d ლოგებმა რომ არ შეგაწუხოთ) ან **docker-compose -f docker_compose_local_v3.yml up --build** | No, HDFS აკლია | Kafka აკლია |
+| docker_compose_local_v4.yml |იგივე, რაც v3, თუმცა Kafka დაემატა | Airflow **Local** Executor (Prebuilt) + Spark, Jupyter, Kafka | **docker-compose -f docker_compose_local_v4.yml up --build** (ბოლოში -d ლოგებმა რომ არ შეგაწუხოთ) ან **docker-compose -f docker_compose_local_v4.yml up --build** | No, HDFS აკლია | Yes |
+| docker_compose_local_v5.yml | ყველა სერვისია ერთად | Airflow **Local** Executor (Prebuilt) + Spark, Hadoop (HDFS, Hue, Hive), Jupyter, Kafka | **docker-compose -f docker_compose_local_v5.yml up --build** (ბოლოში -d ლოგებმა რომ არ შეგაწუხოთ) ან **docker-compose -f docker_compose_local_v5.yml up --build** | Yes| Yes |
 
-აქ პარალელიზმი არ იქნება და პროექტშიც წესით არ გამოგადგებათ. თუმცა ამ ვერსიის გასაშვებად უნდა მოიქცეთ ასე:
-
- - ამ რეპოზიტორის დირექტორიაში (სადაც _**docker_compose_sequential_build_needed.yml**_) ფაილია უშვებთ:
-      **docker-compose up --build**__ (ბოლოში -d ლოგებმა რომ არ შეგაწუხოთ) ან **docker-compose -f docker_compose_sequential_build_needed.yml up --build**
-
-**_Local_**
-
-აქ პარალელიზმი გექნებათ და უფრო რეკომენდირებულია Local Executor-ის გამოყენება. აქ გვაქვს ორი docker-compose:
-
-**1. prebuilt ვერსია - *docker_compose_local_prebuilt.yml***
-ამ ვარიანტში Airflow+Spark-ის ნაწილი ჩვენ მიერ წინასწარ არის დაბილდული და Dockerhub-ზე ატვირთული. გირჩევთ, ეს ვერსია გამოიყენოთ, ვინაიდან build-ს საკმაოდ დიდი დრო სჭირდება.
-
-ამ ვერსიის გასაშვებად ფაქტობრივად მხოლოდ docker_compose_local_prebuilt.yml ფაილი გჭირდებათ. ამ ფაილის დირექტორიაში უშვებთ:
-
-**docker-compose -f docker_compose_local_prebuilt.yml up**
 
 image-ების დაპულვას ცოტა დრო დასჭირდება და ამის შემდეგ კონტეინერების აწევას, განსაკუთრებით Airflow-სას, მიახლოებით 1 წუთამდე უნდა დასჭირდეს.
-გაითვალისწინეთ, რომ კონტეინერების დოკერის UI-დან დასტოპების შემთხვევაში, ეარფლოუს კონტეინერებში რჩება .err და .pid ფაილები, რომლებიც კონტეინერების მომდევნო დასტარტვას ხელს უშლიან. Workaround: დოკერის UI-დან კონტეინერები საერთოდ წაშალეთ და თავიდან გაუშვით docker-compose.
 
-**2. დასა-build ვერსია - *docker_compose_local_build_needed.yml***
+- თუ კონტეინერების დოკერის UI-დან დასტოპების შემთხვევაში, ეარფლოუს კონტეინერებში რჩება .err და .pid ფაილები, რომლებიც კონტეინერების მომდევნო დასტარტვას ხელს უშლიან (scheduler is not running), მაშინ here's a workaround: დოკერის UI-დან კონტეინერები საერთოდ წაშალეთ და თავიდან გაუშვით docker-compose.
 
-ეს ვერსია ამ რეპოზიტორიაში არსებული Dockerfile, entrypoint და სხვა რესურსების გამოყენებით ბილდავს იმიჯს, რასაც საკმაო დრო (30წთ+) სჭირდება. იმ შემთხვევაში გირჩევთ ამ ვერსიის გამოყენებას, თუ Dockerfile-ის ან თუნდაც entrypoint ფაილების შეცვლა გჭირდებათ. მაგალითად, შეიძლება ახალი requirement-ების დამატება გჭირდებოდეთ. თუ მსგავსი სიტუაცია არაა, მაშინ უმჯობესია prebuilt ვარიანტის გამოყენება. 
-
- ამ ვერსიის დასაბილდად გაუშვით:
-      **docker-compose -f docker_compose_local_build_needed.yml up --build**
-
-ბოლოში --build აუცილებელია.
-
-თუ შეამჩნევთ, რომ ეარფლოუს კონტეინერ(ებ)ი  წამდაუწუმ რესტარტდება, დოკერის ინტერფეისიდან წაშალეთ ეგ კონტეინერები ერთიანად და გაიმეორეთ docker-compose ... [build].
+- თუ შეამჩნევთ, რომ ეარფლოუს კონტეინერ(ებ)ი  წამდაუწუმ რესტარტდება, დოკერის ინტერფეისიდან წაშალეთ ეგ კონტეინერები ერთიანად და გაიმეორეთ docker-compose ... [build].
 
 ---
 # **Airflow:**
