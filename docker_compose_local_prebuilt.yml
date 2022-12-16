@@ -12,11 +12,12 @@ services:
       POSTGRES_DB: airflow
       PGPORT: 5433
     restart: always
-  airflow_with_spark:
+  scheduler:
     image: docker.io/anajaparidze/airflow_spark:airflow_2.1.4-spark_2.4.7
+    depends_on:
+      - postgres
     ports:
       - "5433"
-      - 8080:8080
     environment:
       AIRFLOW__CORE__FERNET_KEY: 8NE6O6RcTJpxcCkuKxOHOExzIJkXkeJKbRie03a69dI=
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@postgres:5433/airflow
@@ -27,16 +28,26 @@ services:
                             && echo '### Running DB Init... '
                             && airflow db init 
                             && echo '### Starting scheduler... '
-                            && airflow scheduler -D
-                            && echo '### Sleeping 10 seconds... '                            
-                            && sleep 10
-                            && echo '### Starting webserver... '                            
-                            && airflow webserver"]
+                            && airflow scheduler"]
     volumes:
       - /d/BigDataPlayground/local/dags:/airflow/dags
       - /d/BigDataPlayground/local/jobs:/airflow/jobs
       - /d/BigDataPlayground/local/data:/airflow/data    
       - airflow_logs:/airflow/logs/  
+  webserver:
+    image: docker.io/anajaparidze/airflow_spark:airflow_2.1.4-spark_2.4.7
+    depends_on:
+      - scheduler
+    command: ["bash", "-c", "airflow webserver"]
+    ports:
+      - 8080:8080
+    volumes:
+      - airflow_logs:/airflow/logs/
+    environment:
+      AIRFLOW__CORE__FERNET_KEY: 8NE6O6RcTJpxcCkuKxOHOExzIJkXkeJKbRie03a69dI=
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@postgres:5433/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor      
+    restart: always
 
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
