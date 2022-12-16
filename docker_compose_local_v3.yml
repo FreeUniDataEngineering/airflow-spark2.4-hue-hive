@@ -1,0 +1,73 @@
+version: '2'
+services:
+  postgres:
+    image: postgres:9.6
+    volumes:
+      - //d/BigDataPlayground/local_v3/arf_pg_data:/var/lib/postgresql/data
+    ports:
+      - "5433"
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+      PGPORT: 5433
+    restart: always
+  scheduler:
+    image: docker.io/anajaparidze/airflow_spark:airflow_2.1.4-spark_2.4.7
+    depends_on:
+      - postgres
+    ports:
+      - "5433"
+    environment:
+      AIRFLOW__CORE__FERNET_KEY: 8NE6O6RcTJpxcCkuKxOHOExzIJkXkeJKbRie03a69dI=
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@postgres:5433/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor      
+      PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
+    restart: always
+    command: ["bash", "-c", "echo '### Testing connection... '
+                            && python test_db_conn.py 
+                            && echo '### Running DB Init... '
+                            && airflow db init 
+                            && echo '### Starting scheduler... '
+                            && airflow scheduler"]
+    volumes:
+      - //d/BigDataPlayground/local_v3/dags:/airflow/dags
+      - //d/BigDataPlayground/local_v3/jobs:/airflow/jobs
+      - //d/BigDataPlayground/local_v3/data:/airflow/data    
+      - airflow_logs:/airflow/logs/  
+  webserver:
+    image: docker.io/anajaparidze/airflow_spark:airflow_2.1.4-spark_2.4.7
+    depends_on:
+      - scheduler
+    command: ["bash", "-c", "airflow webserver"]
+    ports:
+      - 8080:8080
+    volumes:
+      - airflow_logs:/airflow/logs/
+    environment:
+      AIRFLOW__CORE__FERNET_KEY: 8NE6O6RcTJpxcCkuKxOHOExzIJkXkeJKbRie03a69dI=
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@postgres:5433/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor      
+      PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
+    restart: always
+
+  pyspark-notebook:
+      image: kublr/pyspark-notebook:spark-2.4.0-hadoop-2.6
+      volumes:
+        - ///d/BigDataPlayground/local_v3/notebooks:/jupyter
+      user: root
+      container_name: pyspark-notebook
+      hostname: pyspark-notebook
+      ports:
+        - 8282:8888             
+        - "4040-4050:4040-4050"
+      environment:
+        JUPYTER_TOKEN: token
+volumes:
+  # pg_data: 
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     o: bind
+  #     device: ///d/BigDataPlayground/local_v3/hive_pg_data
+  airflow_logs: {}

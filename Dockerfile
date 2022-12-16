@@ -91,6 +91,7 @@ RUN set -euo pipefail && \
             "psycopg2" \
             "apache-airflow-providers-apache-spark==2.0.2" \
             "apache-airflow-providers-apache-hdfs==${AIRFLOW_NORM_VERSION}"\
+            "protobuf==3.20.*"\
             ; \
     elif [[ "${AIRFLOW_NORM_VERSION}" == "1.9.*" ]]; then \
         pip install \
@@ -117,6 +118,9 @@ RUN set -euo pipefail && \
             "python3-openid" \
             ## Need to fix werkzeug <https://stackoverflow.com/a/60459142>
             "werkzeug<1.0" \
+            "apache-airflow-providers-apache-spark==2.0.2" \
+            "apache-airflow-providers-apache-hdfs==${AIRFLOW_NORM_VERSION}"\
+            "protobuf==3.20.*"\
             ; \
     fi; \
     popd; \

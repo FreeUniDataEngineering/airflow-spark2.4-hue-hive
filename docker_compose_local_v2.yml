@@ -3,7 +3,7 @@ services:
   postgres:
     image: postgres:9.6
     volumes:
-      - /d/BigDataPlayground/local/arf_pg_data:/var/lib/postgresql/data
+      - /d/BigDataPlayground/local_v2/arf_pg_data:/var/lib/postgresql/data
     ports:
       - "5433"
     environment:
@@ -22,6 +22,7 @@ services:
       AIRFLOW__CORE__FERNET_KEY: 8NE6O6RcTJpxcCkuKxOHOExzIJkXkeJKbRie03a69dI=
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@postgres:5433/airflow
       AIRFLOW__CORE__EXECUTOR: LocalExecutor      
+      PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
     restart: always
     command: ["bash", "-c", "echo '### Testing connection... '
                             && python test_db_conn.py 
@@ -30,9 +31,9 @@ services:
                             && echo '### Starting scheduler... '
                             && airflow scheduler"]
     volumes:
-      - /d/BigDataPlayground/local/dags:/airflow/dags
-      - /d/BigDataPlayground/local/jobs:/airflow/jobs
-      - /d/BigDataPlayground/local/data:/airflow/data    
+      - /d/BigDataPlayground/local_v2/dags:/airflow/dags
+      - /d/BigDataPlayground/local_v2/jobs:/airflow/jobs
+      - /d/BigDataPlayground/local_v2/data:/airflow/data    
       - airflow_logs:/airflow/logs/  
   webserver:
     image: docker.io/anajaparidze/airflow_spark:airflow_2.1.4-spark_2.4.7
@@ -47,12 +48,13 @@ services:
       AIRFLOW__CORE__FERNET_KEY: 8NE6O6RcTJpxcCkuKxOHOExzIJkXkeJKbRie03a69dI=
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@postgres:5433/airflow
       AIRFLOW__CORE__EXECUTOR: LocalExecutor      
+      PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
     restart: always
 
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
     volumes:
-      - //d/BigDataPlayground/local/namenode:/hadoop/dfs/name
+      - //d/BigDataPlayground/local_v2/namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
     env_file:
@@ -63,7 +65,7 @@ services:
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
     volumes:
-      - //d/BigDataPlayground/local/datanode:/hadoop/dfs/data
+      - //d/BigDataPlayground/local_v2/datanode:/hadoop/dfs/data
     env_file:
       - ./hadoop-hive.env
     environment:
@@ -106,7 +108,7 @@ services:
   huedb:
     image: postgres:12.1-alpine
     volumes:
-      - //d/BigDataPlayground/local/hive_pg_data:/var/lib/postgresql/data
+      - //d/BigDataPlayground/local_v2/hive_pg_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     env_file:
@@ -128,7 +130,7 @@ services:
   pyspark-notebook:
       image: kublr/pyspark-notebook:spark-2.4.0-hadoop-2.6
       volumes:
-        - //d/BigDataPlayground/local/notebooks:/jupyter
+        - //d/BigDataPlayground/local_v2/notebooks:/jupyter
       user: root
       container_name: pyspark-notebook
       hostname: pyspark-notebook
@@ -143,5 +145,5 @@ volumes:
   #   driver_opts:
   #     type: none
   #     o: bind
-  #     device: //d/BigDataPlayground/local/hive_pg_data
+  #     device: //d/BigDataPlayground/local_v2/hive_pg_data
   airflow_logs: {}
